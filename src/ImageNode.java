@@ -1,4 +1,3 @@
-import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 
 public class ImageNode {

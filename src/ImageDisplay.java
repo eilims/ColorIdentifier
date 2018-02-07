@@ -23,8 +23,8 @@ public class ImageDisplay extends Application{
         this.imageNodeList = new ArrayList<ImageNode>();
         populateImageList("C:\\Users\\db217620\\IdeaProjects\\ImageTest\\images");
 
-        ImageProcessor imageProcessor = new ImageProcessor();
-        imageProcessor.countRGB(this.imageNodeList);
+      ImageProcessor imageProcessor = new ImageProcessor();
+      imageProcessor.countRGBDifference(this.imageNodeList);
 
         //All images go into this box
         HBox box = new HBox();
