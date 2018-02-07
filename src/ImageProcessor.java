@@ -70,7 +70,7 @@ public class ImageProcessor {
                     int colorIndex = 0;
                     int[] colorRatio = new int[colorValues.length];
                     for (int u = 0; u < colorValues.length; u++) {
-                        int difference = ColorRatioNode.getDistance(currentPixel, colorValues[u]);
+                        int difference = currentPixel.getDistance(colorValues[u]);
                         if (difference < minimumDistance) {
                             colorIndex = u;
                             minimumDistance = difference;

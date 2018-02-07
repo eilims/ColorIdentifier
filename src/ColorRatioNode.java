@@ -24,22 +24,26 @@ public class ColorRatioNode {
 
     public ColorRatioNode(int pixel) {
         this.pixel = pixel;
-        this.alphaRatio = (int) 100 * (this.getAlpha(pixel) / this.getAlpha(this.ALPHA_MASK));
-        this.redRatio = (int) 100 * (this.getRed(pixel) / this.getRed(this.RED_MASK));
-        this.greenRatio = (int) 100 * (this.getGreen(pixel) / this.getGreen(this.GREEN_MASK));
-        this.blueRatio = (int) 100 * (this.getBlue(pixel) / this.getBlue(this.BLUE_MASK));
+        this.alphaRatio = (int) (100 * ( this.getAlpha(pixel) / this.getAlpha(this.ALPHA_MASK)));
+        this.redRatio = (int) (100 * (this.getRed(pixel) / this.getRed(this.RED_MASK)));
+        this.greenRatio = (int) (100 * (this.getGreen(pixel) / this.getGreen(this.GREEN_MASK)));
+        this.blueRatio = (int) (100 * (this.getBlue(pixel) / this.getBlue(this.BLUE_MASK)));
     }
 
-    //Returns color1 - color2
-    public static int getDistance(ColorRatioNode color1, ColorRatioNode color2) {
-        return (int) sqrt(pow((color1.getRed() - color2.getRed()), 2)
-                        + pow((color1.getGreen() - color2.getGreen()), 2)
-                        + pow((color1.getBlue() - color2.getBlue()), 2)
+    //Returns this - colorToCompare
+    public int getDistance(ColorRatioNode colorToCompare) {
+        return (int) sqrt((2 * pow((this.getRed() - colorToCompare.getRed()), 2))
+                + (4 * pow((this.getGreen() - colorToCompare.getGreen()), 2))
+                + (3 * pow((this.getBlue() - colorToCompare.getBlue()), 2))
         );
     }
 
+    //Requires additional processing due to an arithmetic shift cause by a present negative value
+    // 0xFF000000 >> 24 == -1
+    // 0x7F000000 >> 24 == 127
+    // (0xFF000000 >> 24) & 0xFF == 255
     public int getAlpha() {
-        return (this.pixel & this.ALPHA_MASK) >> 24;
+        return (((this.pixel & this.ALPHA_MASK) >> 24) & this.BLUE_MASK);
     }
 
     public int getRed() {
@@ -54,19 +58,19 @@ public class ColorRatioNode {
         return (this.pixel & this.BLUE_MASK);
     }
 
-    public int getAlpha(int pixel) {
+    public double getAlpha(int pixel) {
         return (pixel & this.ALPHA_MASK) >> 24;
     }
 
-    public int getRed(int pixel) {
+    public double getRed(int pixel) {
         return (pixel & this.RED_MASK) >> 16;
     }
 
-    public int getGreen(int pixel) {
+    public double getGreen(int pixel) {
         return (pixel & this.GREEN_MASK) >> 8;
     }
 
-    public int getBlue(int pixel) {
+    public double getBlue(int pixel) {
         return pixel & this.BLUE_MASK;
     }
 
