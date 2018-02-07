@@ -2,6 +2,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -22,6 +23,8 @@ public class ImageDisplay extends Application{
         this.imageNodeList = new ArrayList<ImageNode>();
         populateImageList("C:\\Users\\db217620\\IdeaProjects\\ImageTest\\images");
 
+        ImageProcessor imageProcessor = new ImageProcessor();
+        imageProcessor.countRGB(this.imageNodeList);
 
         //All images go into this box
         HBox box = new HBox();
@@ -42,8 +45,6 @@ public class ImageDisplay extends Application{
 
         stage.show();
 
-        ImageProcessor imageProcessor = new ImageProcessor();
-        imageProcessor.countRGB(this.imageNodeList);
     }
 
     public static void main(String[] args){
@@ -59,9 +60,10 @@ public class ImageDisplay extends Application{
             if (imageDirectory.exists()) {
                 File[] imagePath = imageDirectory.listFiles();
                 for (int i = 0; i < imagePath.length; i++) {
+                    Image image = new Image("file:///" + imagePath[i].getPath());
                     imageNodeList.add(new ImageNode(
                             imagePath[i].getPath(),
-                            new Image("file:///" + imagePath[i].getPath()))
+                            new WritableImage(image.getPixelReader(), (int)image.getWidth(), (int)image.getHeight()))
                     );
                 }
             }

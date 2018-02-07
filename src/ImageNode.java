@@ -1,16 +1,17 @@
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 
 public class ImageNode {
 
     private String imagePath;
-    private Image image;
+    private WritableImage image;
 
     public ImageNode(){
         this.imagePath = null;
         this.image = null;
     }
 
-    public ImageNode(String imagePath, Image image){
+    public ImageNode(String imagePath, WritableImage image){
         this.imagePath = imagePath;
         this.image = image;
     }
@@ -23,11 +24,11 @@ public class ImageNode {
         this.imagePath = imagePath;
     }
 
-    public Image getImage() {
+    public WritableImage getImage() {
         return image;
     }
 
-    public void setImage(Image image) {
+    public void setImage(WritableImage image) {
         this.image = image;
     }
 }

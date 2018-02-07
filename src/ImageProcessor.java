@@ -1,4 +1,6 @@
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 
 import java.util.ArrayList;
 
@@ -10,6 +12,7 @@ public class ImageProcessor {
         int R = 255 << 16;
         int G = 255 << 8;
         int B = 255;
+
         imageList.forEach(imageNode -> {
             //pixel counts
             int red = 0;
@@ -25,6 +28,7 @@ public class ImageProcessor {
                         red++;
                     } else if ((RGB & G) != 0) {
                         green++;
+                        imageNode.getImage().getPixelWriter().setArgb(row, column, 0xFF000000);
                     } else if ((RGB & B) != 0) {
                         blue++;
                     }
