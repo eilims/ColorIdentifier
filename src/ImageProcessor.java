@@ -46,12 +46,15 @@ public class ImageProcessor {
 
     public void countRGBDifference(ArrayList<ImageNode> imageList) {
         //RGB values for color. exclude alpha for ease of use
-        ColorRatioNode red = new ColorRatioNode(0xFF0000);
-        ColorRatioNode green = new ColorRatioNode(0x00FF00);
-        ColorRatioNode blue = new ColorRatioNode(0x0000FF);
-        ColorRatioNode yellow = new ColorRatioNode(0xFFFF00);
-        ColorRatioNode magenta = new ColorRatioNode(0xFF00FF);
-        ColorRatioNode[] colorValues = {red, green, blue, yellow, magenta};
+
+        ColorRatioNode red = new ColorRatioNode(0xFFFF0000);
+        ColorRatioNode green = new ColorRatioNode(0xFF00FF00);
+        ColorRatioNode blue = new ColorRatioNode(0xFF0000FF);
+        ColorRatioNode yellow = new ColorRatioNode(0xFFFFFF00);
+        ColorRatioNode magenta = new ColorRatioNode(0xFFFF00FF);
+        ColorRatioNode cyan = new ColorRatioNode(0xFF00FFFF);
+        ColorRatioNode[] colorValues = {red, green, blue, yellow, magenta, cyan};
+        String[] colorNames = {"red", "green", "blue", "yellow", "magenta", "cyan"};
 
         imageList.forEach(imageNode -> {
             //pixel counts
@@ -81,7 +84,7 @@ public class ImageProcessor {
             }
             System.out.println("Image: " + imageNode.getImagePath());
             for (int i = 0; i < colorCount.length; i++) {
-                System.out.println("Index " + i + " Value: " + colorCount[i]);
+                System.out.println("Color: " + colorNames[i] + "     Value: " + colorCount[i]);
             }
         });
     }

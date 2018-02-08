@@ -10,16 +10,24 @@ class ColorRatioNodeTest {
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
+        //Magenta
         color1 = new ColorRatioNode(0xFFFF00FF);
+        //Yellow
         color2 = new ColorRatioNode(0xFFFFFF00);
+        //Cyan?
         color3 = new ColorRatioNode(0xFFA8D3FF);
     }
 
     @org.junit.jupiter.api.Test
     void getDistance() {
+        //magenta vs magenta
         assertEquals(0, color1.getDistance(color1));
+        //magenta bs yellow
         assertEquals(674, color1.getDistance(color2));
+        //Cyan? vs blue
         assertEquals(484, color3.getDistance(new ColorRatioNode(0xFF0000FF)));
+        //cyan vs magenta
+        assertEquals(439, color3.getDistance(color1));
     }
 
     @org.junit.jupiter.api.Test
