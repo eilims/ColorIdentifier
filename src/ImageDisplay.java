@@ -1,6 +1,9 @@
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -12,26 +15,32 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-public class ImageDisplay extends Application{
+public class ImageDisplay extends Application {
 
     private ArrayList<ImageNode> imageNodeList;
 
     @Override
-    public void start(Stage stage){
-
+    public void start(Stage stage) {
 
 
         //Instantiate array list and populate it with generated images
         this.imageNodeList = new ArrayList<ImageNode>();
         populateImageList("C:\\Users\\db217620\\IdeaProjects\\ImageTest\\images");
 
-      ImageProcessor imageProcessor = new ImageProcessor();
-      imageProcessor.countRGBDifference(this.imageNodeList);
+        ImageProcessor imageProcessor = new ImageProcessor();
+        imageProcessor.countRGBDifference(this.imageNodeList);
 
         //All images go into this hbox
         VBox vbox = new VBox();
         HBox hbox = new HBox(vbox);
+        Label label = new Label("Hello!");
         Button button1 = new Button("Parse for Red");
+        button1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                label.setText("IT IS DONE");
+            }
+        });
         Button button2 = new Button("Parse for Green");
         Button button3 = new Button("Parse for Blue");
         Button button4 = new Button("Parse for Magenta");
@@ -43,6 +52,7 @@ public class ImageDisplay extends Application{
         vbox.getChildren().add(button4);
         vbox.getChildren().add(button5);
         vbox.getChildren().add(button6);
+        hbox.getChildren().add(label);
         this.imageNodeList.forEach(imageNode -> {
             //ImageView will display the image passed in as a parameter
             ImageView imageView = new ImageView(imageNode.getImage());
@@ -51,13 +61,13 @@ public class ImageDisplay extends Application{
         });
 
         //Added hbox to scene
-        Scene scene = new Scene(hbox,1500,1300);
+        Scene scene = new Scene(hbox, 1500, 1300);
         stage.setScene(scene);
         stage.show();
 
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         Application.launch(args);
     }
@@ -73,7 +83,7 @@ public class ImageDisplay extends Application{
                     Image image = new Image("file:///" + imagePath[i].getPath());
                     imageNodeList.add(new ImageNode(
                             imagePath[i].getPath(),
-                            new WritableImage(image.getPixelReader(), (int)image.getWidth(), (int)image.getHeight()))
+                            new WritableImage(image.getPixelReader(), (int) image.getWidth(), (int) image.getHeight()))
                     );
                 }
             }

@@ -5,12 +5,12 @@ public class ImageNode {
     private String imagePath;
     private WritableImage image;
 
-    public ImageNode(){
+    public ImageNode() {
         this.imagePath = null;
         this.image = null;
     }
 
-    public ImageNode(String imagePath, WritableImage image){
+    public ImageNode(String imagePath, WritableImage image) {
         this.imagePath = imagePath;
         this.image = image;
     }

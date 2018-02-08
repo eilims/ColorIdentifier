@@ -1,8 +1,5 @@
 import java.util.ArrayList;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
-
 public class ImageProcessor {
 
     public ImageProcessor() {
@@ -31,7 +28,6 @@ public class ImageProcessor {
                         red++;
                     } else if ((RGB & G) != 0) {
                         green++;
-                        //imageNode.getImage().getPixelWriter().setArgb(col, row, 0xFF000000);
                     } else if ((RGB & B) != 0) {
                         blue++;
                     }
