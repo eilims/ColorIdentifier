@@ -94,6 +94,7 @@ public class ImageDisplay extends Application {
                 button6.setText("Parse for Cyan");
                 imageNodeList = resetImage(imageNodeList);
                 drawImages(imageNodeList);
+                colorInImage = new ArrayList<String>();
             }
         });
 
