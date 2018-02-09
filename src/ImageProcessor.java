@@ -1,6 +1,19 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ImageProcessor {
+
+    private final String[] colorNames = {"Red", "Green", "Blue", "Yellow", "Magenta", "Cyan"};
+
+    private boolean[] colorParsing = new boolean[colorNames.length];;
+
+    private final ColorRatioNode red = new ColorRatioNode(0xFFFF0000);
+    private final ColorRatioNode green = new ColorRatioNode(0xFF00FF00);
+    private final  ColorRatioNode blue = new ColorRatioNode(0xFF0000FF);
+    private final ColorRatioNode yellow = new ColorRatioNode(0xFFFFFF00);
+    private final ColorRatioNode magenta = new ColorRatioNode(0xFFFF00FF);
+    private final ColorRatioNode cyan = new ColorRatioNode(0xFF00FFFF);
+    private final ColorRatioNode[] colorValues = {red, green, blue, yellow, magenta, cyan};;
 
     public ImageProcessor() {
     }
@@ -42,34 +55,22 @@ public class ImageProcessor {
 
     public void countRGBDifference(ArrayList<ImageNode> imageList) {
         //RGB values for color. exclude alpha for ease of use
-
-        ColorRatioNode red = new ColorRatioNode(0xFFFF0000);
-        ColorRatioNode green = new ColorRatioNode(0xFF00FF00);
-        ColorRatioNode blue = new ColorRatioNode(0xFF0000FF);
-        ColorRatioNode yellow = new ColorRatioNode(0xFFFFFF00);
-        ColorRatioNode magenta = new ColorRatioNode(0xFFFF00FF);
-        ColorRatioNode cyan = new ColorRatioNode(0xFF00FFFF);
-        ColorRatioNode[] colorValues = {red, green, blue, yellow, magenta, cyan};
-        String[] colorNames = {"red", "green", "blue", "yellow", "magenta", "cyan"};
-
         imageList.forEach(imageNode -> {
             //pixel counts
-            int[] colorCount = new int[colorValues.length];
+            int[] colorCount = new int[this.colorValues.length];
 
             //Parsing through each pixel
             int height = (int) imageNode.getImage().getHeight();
             int width = (int) imageNode.getImage().getWidth();
             for (int col = 0; col < width; col++) {
                 for (int row = 0; row < height; row++) {
-                    ColorRatioNode currentPixel = new ColorRatioNode(
-                            imageNode.getImage().getPixelReader().getArgb(col, row)
-                    );
+                    ColorRatioNode currentPixel = new ColorRatioNode(imageNode.getImage().getPixelReader().getArgb(col, row));
                     //Find which category the pixel falls into
                     int minimumDistance = Integer.MAX_VALUE;
                     int colorIndex = 0;
-                    int[] colorRatio = new int[colorValues.length];
-                    for (int u = 0; u < colorValues.length; u++) {
-                        int difference = currentPixel.getDistance(colorValues[u]);
+                    int[] colorRatio = new int[this.colorValues.length];
+                    for (int u = 0; u < this.colorValues.length; u++) {
+                        int difference = currentPixel.getDistance(this.colorValues[u]);
                         if (difference < minimumDistance) {
                             colorIndex = u;
                             minimumDistance = difference;
@@ -80,8 +81,47 @@ public class ImageProcessor {
             }
             System.out.println("Image: " + imageNode.getImagePath());
             for (int i = 0; i < colorCount.length; i++) {
-                System.out.println("Color: " + colorNames[i] + "     Value: " + colorCount[i]);
+                System.out.println("Color: " + this.colorNames[i] + "     Value: " + colorCount[i]);
             }
         });
+    }
+
+    public void blackoutColor(ArrayList<String> colorList, ArrayList<ImageNode> imageList) {
+        //Determine which colors need to be parsed
+        for (int i = 0; i < this.colorNames.length; i++) {
+            if (colorList.contains(this.colorNames[i])) {
+                this.colorParsing[i] = true;
+            } else {
+                this.colorParsing[i] = false;
+            }
+        }
+
+        //Parse through each image
+        imageList.forEach(imageNode -> {
+            //Parsing through each pixel
+            int height = (int) imageNode.getImage().getHeight();
+            int width = (int) imageNode.getImage().getWidth();
+            for (int col = 0; col < width; col++) {
+                for (int row = 0; row < height; row++) {
+                    ColorRatioNode currentPixel = new ColorRatioNode(imageNode.getImage().getPixelReader().getArgb(col, row));
+                    //Find which category the pixel falls into
+                    int minimumDistance = Integer.MAX_VALUE;
+                    int colorIndex = 0;
+                    for (int u = 0; u < this.colorNames.length; u++) {
+                        int difference = currentPixel.getDistance(this.colorValues[u]);
+                        if (difference < minimumDistance) {
+                            colorIndex = u;
+                            minimumDistance = difference;
+                        }
+                    }
+                    if(this.colorParsing[colorIndex]){
+                        imageNode.getImage().getPixelWriter().setArgb(col, row, 0xFF000000);
+                    }
+
+                }
+            }
+
+        });
+
     }
 }
