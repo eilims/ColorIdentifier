@@ -18,6 +18,18 @@ public class ImageProcessor {
     public ImageProcessor() {
     }
 
+    private void parseForColors(ArrayList<String> colorList){
+        for (int i = 0; i < this.colorNames.length; i++) {
+            if (colorList.contains(this.colorNames[i])) {
+                this.colorParsing[i] = true;
+            } else {
+                this.colorParsing[i] = false;
+            }
+        }
+    }
+
+    //Depracated
+    //Counts the number of R, G, and B pixels in a picture through direct comparison
     public void countRGB(ArrayList<ImageNode> imageList) {
         int R = 255 << 16;
         int G = 255 << 8;
@@ -53,6 +65,9 @@ public class ImageProcessor {
         });
     }
 
+    //Depracted
+    //Counts the number of R, G, and B pixels using the color distance formula
+    @Deprecated
     public void countRGBDifference(ArrayList<ImageNode> imageList) {
         //RGB values for color. exclude alpha for ease of use
         imageList.forEach(imageNode -> {
@@ -86,15 +101,12 @@ public class ImageProcessor {
         });
     }
 
+    //Active
+    //Turns the selected colors in colorList black
+    //The key is to pass the original unaltered image every time to ensure proper operation and resetting.
     public void blackoutColor(ArrayList<String> colorList, ArrayList<ImageNode> imageList) {
         //Determine which colors need to be parsed
-        for (int i = 0; i < this.colorNames.length; i++) {
-            if (colorList.contains(this.colorNames[i])) {
-                this.colorParsing[i] = true;
-            } else {
-                this.colorParsing[i] = false;
-            }
-        }
+        this.parseForColors(colorList);
 
         //Parse through each image
         imageList.forEach(imageNode -> {
@@ -122,6 +134,14 @@ public class ImageProcessor {
             }
 
         });
+
+    }
+
+    //Generates the contrast image for edge detection
+    public void generateContrastImage(ArrayList<String> colorList, ArrayList<ImageNode> imageNodeList){
+        //Determine which colors need to be parsed
+        this.parseForColors(colorList);
+
 
     }
 }

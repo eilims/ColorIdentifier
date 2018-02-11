@@ -22,12 +22,13 @@ public class ImageDisplay extends Application {
 
     private HBox hbox;
     private VBox vbox;
+
     @Override
     public void start(Stage stage) {
 
         //Instantiate array list and populate it with generated images
-        this.colorInImage = new ArrayList<String>();
-        this.imageNodeList = new ArrayList<ImageNode>();
+        this.colorInImage = new ArrayList<>();
+        this.imageNodeList = new ArrayList<>();
         this.imageNodeList = resetImage(this.imageNodeList);
 
         this.imageProcessor = new ImageProcessor();
@@ -41,61 +42,28 @@ public class ImageDisplay extends Application {
 
         //Button declarations
         Button button1 = new Button("Parse for Red");
-        button1.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonText(button1, "Red");
-            }
-        });
+        button1.setOnAction(event -> buttonText(button1, "Red"));
         Button button2 = new Button("Parse for Green");
-        button2.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonText(button2, "Green");
-            }
-        });
+        button2.setOnAction(event -> buttonText(button2, "Green"));
         Button button3 = new Button("Parse for Blue");
-        button3.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonText(button3, "Blue");
-            }
-        });
+        button3.setOnAction(event -> buttonText(button3, "Blue"));
         Button button4 = new Button("Parse for Magenta");
-        button4.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonText(button4, "Magenta");
-            }
-        });
+        button4.setOnAction(event -> buttonText(button4, "Magenta"));
         Button button5 = new Button("Parse for Yellow");
-        button5.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonText(button5, "Yellow");
-            }
-        });
+        button5.setOnAction(event -> buttonText(button5, "Yellow"));
         Button button6 = new Button("Parse for Cyan");
-        button6.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonText(button6, "Cyan");
-            }
-        });
+        button6.setOnAction(event -> buttonText(button6, "Cyan"));
         Button button7 = new Button("Reset");
-        button7.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                button1.setText("Parse for Red");
-                button2.setText("Parse for Green");
-                button3.setText("Parse for Blue");
-                button4.setText("Parse for Magenta");
-                button5.setText("Parse for Yellow");
-                button6.setText("Parse for Cyan");
-                imageNodeList = resetImage(imageNodeList);
-                drawImages(imageNodeList);
-                colorInImage = new ArrayList<String>();
-            }
+        button7.setOnAction(event -> {
+            button1.setText("Parse for Red");
+            button2.setText("Parse for Green");
+            button3.setText("Parse for Blue");
+            button4.setText("Parse for Magenta");
+            button5.setText("Parse for Yellow");
+            button6.setText("Parse for Cyan");
+            imageNodeList = resetImage(imageNodeList);
+            drawImages(imageNodeList);
+            colorInImage = new ArrayList<>();
         });
 
         //Adding buttons to the hbox
@@ -109,7 +77,7 @@ public class ImageDisplay extends Application {
         drawImages(this.imageNodeList);
 
         //Added hbox to scene
-        Scene scene = new Scene(hbox, 1500, 1300);
+        Scene scene = new Scene(hbox, 1800, 1200);
         stage.setScene(scene);
         stage.show();
     }
@@ -124,10 +92,10 @@ public class ImageDisplay extends Application {
         try {
             if (imageDirectory.exists()) {
                 File[] imagePath = imageDirectory.listFiles();
-                for (int i = 0; i < imagePath.length; i++) {
-                    Image image = new Image("file:///" + imagePath[i].getPath());
+                for (File anImagePath : imagePath) {
+                    Image image = new Image("file:///" + anImagePath.getPath());
                     arrayList.add(new ImageNode(
-                            imagePath[i].getPath(),
+                            anImagePath.getPath(),
                             new WritableImage(image.getPixelReader(),
                                     (int) image.getWidth(),
                                     (int) image.getHeight()))
@@ -139,6 +107,36 @@ public class ImageDisplay extends Application {
         }
     }
 
+    enum Color {
+        RED("red", 1),
+        GREEN("green", 1);
+
+        private String name;
+        private int value;
+
+        Color(String name, int value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        private int getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+    }
+
+    private String test(Color color) {
+        String s = "disable " + color;
+        for(Color c : Color.values()) {
+
+        }
+        return s;
+    }
 
     public void buttonText(Button button, String color) {
         if (button.getText().equals("Parse for " + color)) {
@@ -166,7 +164,7 @@ public class ImageDisplay extends Application {
     }
 
     public ArrayList<ImageNode> resetImage(ArrayList<ImageNode> arrayList){
-        arrayList = new ArrayList<ImageNode>();
+        arrayList = new ArrayList<>();
         populateImageList(arrayList, "C:\\Users\\db217620\\IdeaProjects\\ImageTest\\images");
         return arrayList;
     }
