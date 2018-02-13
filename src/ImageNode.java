@@ -10,7 +10,7 @@ public class ImageNode {
         this.image = null;
     }
 
-    public ImageNode(String imagePath, WritableImage image) {
+    ImageNode(String imagePath, WritableImage image) {
         this.imagePath = imagePath;
         this.image = image;
     }

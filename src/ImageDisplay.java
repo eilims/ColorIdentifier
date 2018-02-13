@@ -1,6 +1,4 @@
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -17,6 +15,7 @@ import java.util.ArrayList;
 public class ImageDisplay extends Application {
 
     private ArrayList<ImageNode> imageNodeList;
+    private ArrayList<ImageNode> contrastImageList;
     private ArrayList<String> colorInImage;
     private ImageProcessor imageProcessor;
 
@@ -26,33 +25,39 @@ public class ImageDisplay extends Application {
     @Override
     public void start(Stage stage) {
 
-        //Instantiate array list and populate it with generated images
+        //Instantiate array lists
         this.colorInImage = new ArrayList<>();
         this.imageNodeList = new ArrayList<>();
-        this.imageNodeList = resetImage(this.imageNodeList);
+        this.contrastImageList = new ArrayList<>();
 
+        //Populate array lists with image data
+        this.contrastImageList = resetImage();
+        this.imageNodeList = resetImage();
+
+        //Instantiate image Processor
         this.imageProcessor = new ImageProcessor();
-        imageProcessor.countRGBDifference(this.imageNodeList);
 
-        //All images go into this hbox
+        //Creating GUI layout
+        //All buttons go into this vbox
         this.vbox = new VBox();
+
         //adding vbox into hbox ahead of time
         //VerticalBox goes into HorizontalBox. Like a multidimensional array.
         this.hbox = new HBox(vbox);
 
         //Button declarations
         Button button1 = new Button("Parse for Red");
-        button1.setOnAction(event -> buttonText(button1, "Red"));
+        button1.setOnAction(event -> buttonAction(button1, "Red"));
         Button button2 = new Button("Parse for Green");
-        button2.setOnAction(event -> buttonText(button2, "Green"));
+        button2.setOnAction(event -> buttonAction(button2, "Green"));
         Button button3 = new Button("Parse for Blue");
-        button3.setOnAction(event -> buttonText(button3, "Blue"));
+        button3.setOnAction(event -> buttonAction(button3, "Blue"));
         Button button4 = new Button("Parse for Magenta");
-        button4.setOnAction(event -> buttonText(button4, "Magenta"));
+        button4.setOnAction(event -> buttonAction(button4, "Magenta"));
         Button button5 = new Button("Parse for Yellow");
-        button5.setOnAction(event -> buttonText(button5, "Yellow"));
+        button5.setOnAction(event -> buttonAction(button5, "Yellow"));
         Button button6 = new Button("Parse for Cyan");
-        button6.setOnAction(event -> buttonText(button6, "Cyan"));
+        button6.setOnAction(event -> buttonAction(button6, "Cyan"));
         Button button7 = new Button("Reset");
         button7.setOnAction(event -> {
             button1.setText("Parse for Red");
@@ -61,8 +66,8 @@ public class ImageDisplay extends Application {
             button4.setText("Parse for Magenta");
             button5.setText("Parse for Yellow");
             button6.setText("Parse for Cyan");
-            imageNodeList = resetImage(imageNodeList);
-            drawImages(imageNodeList);
+            imageNodeList = resetImage();
+            drawImages(imageNodeList, contrastImageList);
             colorInImage = new ArrayList<>();
         });
 
@@ -74,7 +79,8 @@ public class ImageDisplay extends Application {
         vbox.getChildren().add(button5);
         vbox.getChildren().add(button6);
         vbox.getChildren().add(button7);
-        drawImages(this.imageNodeList);
+        //Add images to hbox
+        drawImages(this.imageNodeList, this.contrastImageList);
 
         //Added hbox to scene
         Scene scene = new Scene(hbox, 1800, 1200);
@@ -87,11 +93,12 @@ public class ImageDisplay extends Application {
     }
 
     //This method will populate the imageNodeList with all files located in the image directory
-    public void populateImageList(ArrayList<ImageNode> arrayList, String imageDirectoryPath) {
+    private void populateImageList(ArrayList<ImageNode> arrayList, String imageDirectoryPath) {
         File imageDirectory = new File(imageDirectoryPath);
         try {
             if (imageDirectory.exists()) {
                 File[] imagePath = imageDirectory.listFiles();
+                assert imagePath != null;
                 for (File anImagePath : imagePath) {
                     Image image = new Image("file:///" + anImagePath.getPath());
                     arrayList.add(new ImageNode(
@@ -107,64 +114,41 @@ public class ImageDisplay extends Application {
         }
     }
 
-    enum Color {
-        RED("red", 1),
-        GREEN("green", 1);
-
-        private String name;
-        private int value;
-
-        Color(String name, int value) {
-            this.name = name;
-            this.value = value;
-        }
-
-        private int getValue() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-
-    }
-
-    private String test(Color color) {
-        String s = "disable " + color;
-        for(Color c : Color.values()) {
-
-        }
-        return s;
-    }
-
-    public void buttonText(Button button, String color) {
+    //Resets button text and activate iamage parsing
+    private void buttonAction(Button button, String color) {
         if (button.getText().equals("Parse for " + color)) {
             button.setText("Disable " + color + " Parsing");
             colorInImage.add(color);
-            this.imageProcessor.blackoutColor(this.colorInImage, this.imageNodeList);
-            drawImages(this.imageNodeList);
+            this.imageProcessor.processImageColors(this.colorInImage, this.imageNodeList, ImageProcessor.ColorProcessingTypes.BLACKOUT);
+            this.imageProcessor.processImageColors(this.colorInImage, this.contrastImageList, ImageProcessor.ColorProcessingTypes.CONTRAST_GENERATOR);
+            drawImages(this.imageNodeList, this.contrastImageList);
 
         } else {
             button.setText("Parse for " + color);
             colorInImage.remove(color);
-            this.imageNodeList = resetImage(this.imageNodeList);
-            this.imageProcessor.blackoutColor(this.colorInImage, this.imageNodeList);
-            drawImages(this.imageNodeList);
+            this.imageNodeList = resetImage();
+            this.imageProcessor.processImageColors(this.colorInImage, this.imageNodeList, ImageProcessor.ColorProcessingTypes.BLACKOUT);
+            this.imageProcessor.processImageColors(this.colorInImage, this.contrastImageList, ImageProcessor.ColorProcessingTypes.CONTRAST_GENERATOR);
+            drawImages(this.imageNodeList, this.contrastImageList);
         }
     }
 
-    public void drawImages(ArrayList<ImageNode> array) {
+    //Redraws all images on screen
+    //TODO find way for only one method to be apparent
+    private void drawImages(ArrayList<ImageNode> array, ArrayList<ImageNode> contrastArray) {
         //remove all edited images but save the returned values
         if (hbox.getChildren().size() > 1) {
             hbox.getChildren().remove(1, array.size() + 1);
         }
         //Add original unaltered images back
-        array.forEach(imageNode -> this.hbox.getChildren().add(new ImageView(imageNode.getImage())));
+        for(int i = 0; i < array.size(); i++){
+            this.hbox.getChildren().add(new VBox(new ImageView(array.get(i).getImage()), new ImageView(contrastArray.get(i).getImage())));
+        }
     }
 
-    public ArrayList<ImageNode> resetImage(ArrayList<ImageNode> arrayList){
-        arrayList = new ArrayList<>();
+    //Deletes all references to edited images. Creates new references to original image without edits
+    private ArrayList<ImageNode> resetImage(){
+        ArrayList<ImageNode> arrayList = new ArrayList<>();
         populateImageList(arrayList, "C:\\Users\\db217620\\IdeaProjects\\ImageTest\\images");
         return arrayList;
     }
