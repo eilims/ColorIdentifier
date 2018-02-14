@@ -25,6 +25,9 @@ public class ImageDisplay extends Application {
     @Override
     public void start(Stage stage) {
 
+        //Color array to be used for various color processing specifications
+        Color[] colorArray = Color.values();
+
         //Instantiate array lists
         this.colorInImage = new ArrayList<>();
         this.imageNodeList = new ArrayList<>();
@@ -46,38 +49,27 @@ public class ImageDisplay extends Application {
         this.hbox = new HBox(vbox);
 
         //Button declarations
-        Button button1 = new Button("Parse for Red");
-        button1.setOnAction(event -> buttonAction(button1, "Red"));
-        Button button2 = new Button("Parse for Green");
-        button2.setOnAction(event -> buttonAction(button2, "Green"));
-        Button button3 = new Button("Parse for Blue");
-        button3.setOnAction(event -> buttonAction(button3, "Blue"));
-        Button button4 = new Button("Parse for Magenta");
-        button4.setOnAction(event -> buttonAction(button4, "Magenta"));
-        Button button5 = new Button("Parse for Yellow");
-        button5.setOnAction(event -> buttonAction(button5, "Yellow"));
-        Button button6 = new Button("Parse for Cyan");
-        button6.setOnAction(event -> buttonAction(button6, "Cyan"));
+        //Add all non reset buttons to arrayList for easy processing
+        ArrayList<Button> buttonArrayList = new ArrayList<>();
+        //For every color in colorArray create a new Parse for ____ button
+        for(Color x : colorArray){
+            Button button = new Button("Parse for " + x.getString());
+            button.setOnAction(event -> buttonAction(button, x.getString()));
+            buttonArrayList.add(button);
+        }
+
+        //Creating reset button
         Button button7 = new Button("Reset");
         button7.setOnAction(event -> {
-            button1.setText("Parse for Red");
-            button2.setText("Parse for Green");
-            button3.setText("Parse for Blue");
-            button4.setText("Parse for Magenta");
-            button5.setText("Parse for Yellow");
-            button6.setText("Parse for Cyan");
+            for(int i = 0; i < buttonArrayList.size(); i ++) buttonArrayList.get(i).setText("Parse for " + colorArray[i].getString());
             imageNodeList = resetImage();
             drawImages(imageNodeList, contrastImageList);
             colorInImage = new ArrayList<>();
         });
 
-        //Adding buttons to the hbox
-        vbox.getChildren().add(button1);
-        vbox.getChildren().add(button2);
-        vbox.getChildren().add(button3);
-        vbox.getChildren().add(button4);
-        vbox.getChildren().add(button5);
-        vbox.getChildren().add(button6);
+        //Adding parsing buttons to the vbox
+        buttonArrayList.forEach(button -> vbox.getChildren().add(button));
+        //Add reset button to the vbox
         vbox.getChildren().add(button7);
         //Add images to hbox
         drawImages(this.imageNodeList, this.contrastImageList);
