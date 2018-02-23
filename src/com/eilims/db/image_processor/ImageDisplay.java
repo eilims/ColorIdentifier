@@ -122,6 +122,8 @@ public class ImageDisplay extends Application {
         if (button.getText().equals("Parse for " + color.getString())) {
             button.setText("Disable " + color + " Parsing");
             colorInImage.add(color);
+            this.imageNodeList = resetImageList();
+            this.contrastImageList = resetImageList();
             this.imageProcessor.processImageColors(this.colorInImage, this.imageNodeList, ImageProcessor.ColorProcessingTypes.BLACKOUT_GENERATOR);
             this.imageProcessor.processImageColors(this.colorInImage, this.contrastImageList, ImageProcessor.ColorProcessingTypes.CONTRAST_GENERATOR);
             imageNodeListList.add(this.imageNodeList);

@@ -55,8 +55,6 @@ public class ImageProcessor {
     }
 
 
-    //TODO do not use contrast generator
-    //TODO implement color edge detection variant color calc before calculation and color calc during calculation
     //Counts colored pixels and processes the image depending on passed in processingType
     public void processImageColors(ArrayList<Color> colorList, ArrayList<ImageNode> imageNodeList, ColorProcessingTypes processingType) {
         //Determine which colors need to be parsed
@@ -178,7 +176,7 @@ public class ImageProcessor {
                             3b. Row is not an edge.
                             3c. Row is imageHeight - 1.
                      */
-                    int colorDifference = 0;
+                    int colorDifference;
 
                     //When we are in the first column
                     if (col == 0) {
@@ -212,9 +210,10 @@ public class ImageProcessor {
                     }
                     int remainder = colorDifference % 255;
                     colorDifference = colorDifference - remainder;
-                    colorDifference = colorDifference << 24;
-                    colorDifference = colorDifference | 0x00000000;
-                    imageNode.getImage().getPixelWriter().setArgb(col, row, colorDifference);
+                    if (colorDifference > 100) {
+                        colorDifference = colorDifference << 24;
+                        imageNode.getImage().getPixelWriter().setArgb(col, row, colorDifference);
+                    }
                 }
             }
         });
@@ -304,7 +303,6 @@ public class ImageProcessor {
                 for (int row = 0; row < height; row++) {
                     ColorRatioNode currentPixel = new ColorRatioNode(imageNode.getImage().getPixelReader().getArgb(col, row));
                     //Find which category the pixel falls into
-                    int minimumDistance = Integer.MAX_VALUE;
                     int colorIndex = getColorIndex(currentPixel);
                     if (colorIndex != -1) {
                         if (this.colorParsing[colorIndex]) {
