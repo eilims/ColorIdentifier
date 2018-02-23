@@ -1,12 +1,14 @@
+package com.eilims.db.image_processor;
+
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 public class ColorRatioNode {
 
-    final int ALPHA_MASK = 0xFF000000;
-    final int RED_MASK = 0x00FF0000;
-    final int GREEN_MASK = 0x0000FF00;
-    final int BLUE_MASK = 0x000000FF;
+    private final int ALPHA_MASK = 0xFF000000;
+    private final int RED_MASK = 0x00FF0000;
+    private final int GREEN_MASK = 0x0000FF00;
+    private final int BLUE_MASK = 0x000000FF;
 
     private int pixel;
     private int alphaRatio;
@@ -22,9 +24,9 @@ public class ColorRatioNode {
         this.blueRatio = 0;
     }
 
-    public ColorRatioNode(int pixel) {
+    ColorRatioNode(int pixel) {
         this.pixel = pixel;
-        this.alphaRatio = (int) (100 * ( this.getAlpha(pixel) / this.getAlpha(this.ALPHA_MASK)));
+        this.alphaRatio = (int) (100 * (this.getAlpha(pixel) / this.getAlpha(this.ALPHA_MASK)));
         this.redRatio = (int) (100 * (this.getRed(pixel) / this.getRed(this.RED_MASK)));
         this.greenRatio = (int) (100 * (this.getGreen(pixel) / this.getGreen(this.GREEN_MASK)));
         this.blueRatio = (int) (100 * (this.getBlue(pixel) / this.getBlue(this.BLUE_MASK)));
@@ -58,19 +60,19 @@ public class ColorRatioNode {
         return (this.pixel & this.BLUE_MASK);
     }
 
-    public double getAlpha(int pixel) {
+    private double getAlpha(int pixel) {
         return (pixel & this.ALPHA_MASK) >> 24;
     }
 
-    public double getRed(int pixel) {
+    private double getRed(int pixel) {
         return (pixel & this.RED_MASK) >> 16;
     }
 
-    public double getGreen(int pixel) {
+    private double getGreen(int pixel) {
         return (pixel & this.GREEN_MASK) >> 8;
     }
 
-    public double getBlue(int pixel) {
+    private double getBlue(int pixel) {
         return pixel & this.BLUE_MASK;
     }
 
@@ -113,4 +115,5 @@ public class ColorRatioNode {
     public void setBlueRatio(int blueRatio) {
         this.blueRatio = blueRatio;
     }
+
 }

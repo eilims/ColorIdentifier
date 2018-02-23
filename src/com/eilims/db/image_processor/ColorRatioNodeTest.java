@@ -1,3 +1,5 @@
+package com.eilims.db.image_processor;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

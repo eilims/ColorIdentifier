@@ -1,3 +1,5 @@
+package com.eilims.db.image_processor;
+
 import javafx.scene.image.WritableImage;
 
 public class ImageNode {

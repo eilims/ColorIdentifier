@@ -1,3 +1,5 @@
+package com.eilims.db.image_processor;
+
 public enum Color {
     RED("Red", new ColorRatioNode(0xFFFF0000)),
     GREEN("Green", new ColorRatioNode(0xFF00FF00)),
