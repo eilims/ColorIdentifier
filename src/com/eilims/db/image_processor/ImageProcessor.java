@@ -118,14 +118,24 @@ public class ImageProcessor {
         };
 
         //Calculate Edge Magnitude
+        /*
+            All calculations are done in reference to the center node color.
+            If the center node is not a color we are parsing for the node is black
+         */
         ColorRatioNode centerPixel;
         if (imageMatrix[1][1] != -1) {
             centerPixel = this.colors[imageMatrix[1][1]].getColorRatioNode();
         } else {
             centerPixel = new ColorRatioNode(0xFF000000);
         }
+
+        /*
+            Checking each of the pixels in a 3x3 square around the center node
+         */
         for (int currentPixelColumn = 0; currentPixelColumn < imageMatrix.length; currentPixelColumn++) {
             for (int currentPixelRow = 0; currentPixelRow < imageMatrix[0].length; currentPixelRow++) {
+                //If the pixel is one we are looking for then give is a normal value else consider it black
+                //We calculate the distance so that it is "fair" when considering whether the pixel is an edge or not
                 int pixelValue;
                 if (imageMatrix[currentPixelColumn][currentPixelRow] != -1) {
                     pixelValue = centerPixel.getDistance(this.colors[imageMatrix[currentPixelColumn][currentPixelRow]].getColorRatioNode());
